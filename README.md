@@ -1,6 +1,9 @@
 # time-series-forecast-django
 Time Series forecast web app using statistically modelling, machine learning and deep learning algorithms.
 
+# Live Demo
+https://time-series-forecast-django.herokuapp.com/. Deep learning algorithms are disabled as resources are very limited using a free hosting plan.
+
 # Deploy on Heroku
 Simply clone this repo and connect to your cloned repo on Heroku, then click on Deploy branch.
 
@@ -23,7 +26,7 @@ python manage.py runserver
 # Algorithms
 Algorithms are stored in 
 ```
-/tspredict/algorithms.
+/tspredict/algorithms/
 ```
 
 Feel free to add your own and alter 
