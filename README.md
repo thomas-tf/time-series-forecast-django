@@ -4,6 +4,20 @@ Time Series forecast web app using statistically modelling, machine learning and
 # Deploy on Heroku
 Simply clone this repo and connect to your cloned repo on Heroku, then click on Deploy branch.
 
+# Run Locally
+1. Get Python 3.6+
+
+2. Run
+```
+pip install -r requirements.txt
+python manage.py migrate
+```
+
+3. Then finally run
+```
+python manage.py runserver
+```
+
 # Algorithms
 Algorithms are stored in 
 ```
