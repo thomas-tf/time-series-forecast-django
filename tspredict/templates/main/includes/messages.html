@@ -1,0 +1,13 @@
+    {% if messages %}
+        {% for message in messages %}
+            {% if message.tags == 'success'%}
+                <script>toastr.success("{{message}}", {timeOut: 1000})</script>
+            {% elif message.tags == 'info'%}
+                <script>toastr.info("{{message}}", {timeOut: 1000})</script>
+            {% elif message.tags == 'warning'%}
+                <script>toastr.warning("{{message}}", {timeOut: 5000})</script>
+            {% elif message.tags == 'error'%}
+                <script>toastr.error("{{message}}", {timeOut: 10000})</script>
+            {% endif %}
+        {% endfor %}
+    {% endif %}

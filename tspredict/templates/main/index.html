@@ -1,0 +1,267 @@
+{% extends "main/header.html" %}
+
+{% block content %}
+
+
+<style>
+
+	#regForm {
+		margin: 10px auto;
+		padding: 40px;
+		width: 100%;
+		min-width: 300px;
+	}
+
+	/* Hide all steps by default: */
+	.tab {
+		opacity: 0; 
+		height: 0;
+		overflow: hidden;
+		transition: opacity 1s ease-out;
+	}
+
+	/* Make circles that indicate the steps of the form: */
+	.step {
+		height: 15px;
+		width: 15px;
+		margin: 0 2px;
+		background-color: #bbbbbb;
+		border: none; 
+		border-radius: 50%;
+		display: inline-block;
+		opacity: 0.4;
+	}
+
+	/* Mark the active step: */
+	.step.active {
+		opacity: 1;
+	}
+
+	/* Mark the steps that are finished and valid: */
+	.step.finish {
+		background-color: #37b6ed;
+	}
+
+	.bd-example-modal-lg .modal-dialog{
+		display: table;
+		position: relative;
+		margin: 0 auto;
+		top: calc(50% - 24px);
+	}
+
+	.bd-example-modal-lg .modal-dialog .modal-content{
+		background-color: transparent;
+		border: none;
+	}
+
+</style>
+
+		<div class="container" style="width:50%;">
+			<!-- Card -->
+			<div class="card" style="background-color:#1e282d;">
+				<!-- Card content -->
+				<div id="cardbody" class="card-body">
+
+					<form id="regForm" method="post">
+						{% csrf_token %}
+
+						<div class="tab text-center">
+							<h2 class="card-title">Start your prediction</h2>
+							<p>Apply algorithm of your choice on Hong Kong stock prices.</p>
+						</div>
+
+						<div class="tab text-center">
+								<h3 class="card-title">Choose your stock</h3>
+								<p>Put in your desired stock ID which should be 5 digits and zero-filled. <br><a href="https://en.wikipedia.org/wiki/List_of_companies_listed_on_the_Hong_Kong_Stock_Exchange#0001_-_0099">Hong Kong Stock ID List</a></p>
+								<label for="form1">Stock Identifier</label>
+								<input type="text" class="form-control" id="form1" name="stockid" maxlength="5" placeholder="06823" style="max-width:200px;margin: 0 auto;">
+								<br>
+								
+						</div>
+
+						<div class="tab text-center">
+								<h3 class="card-title">Choose your algorithm</h3>
+								<select id="algo" class="browser-default custom-select" onchange="changeText(this)" style="max-width:250px" name="algo">
+									<optgroup label="Statistical Models">
+										<option value="arima">ARIMA</option>
+										<option value="hw">Holt-winters</option>
+									</optgroup>
+
+									<optgroup label="Machine Learning">
+										<option value="lr" selected="selected">Linear Regression</option>
+										<option value="svr">Support Vector Regressor</option>
+									</optgroup>
+
+									<optgroup label="Deep Learning">
+										<option value="lstm">LSTM</option>
+									</optgroup>
+								</select>
+								<br>
+								<br>
+								<p id="training-time">Expected training time: 30s</p>
+								<p>Deep learning algorithms are disabled due to limited RAM on free hosting platforms. Please check out my github for the code if needed.
+						</div>
+
+						<!-- Button -->
+						<div style="overflow:auto;">
+						<div style="text-align:center;">
+								<button type="button" class="btn btn-md waves-effect btn-info" id="prevBtn" onclick="nextPrev(-1)">Previous</button>
+								<button type="button" class="btn btn-md waves-effect btn-info" id="nextBtn" onclick="nextPrev(1)">Next</button>
+						</div>
+						</div>
+						
+
+						<div style="text-align:center;margin-top:40px;">
+							<span class="step"></span>
+							<span class="step"></span>
+							<span class="step"></span>
+						</div>
+
+					</form>
+
+				</div>
+
+			</div>
+			<!-- Card -->
+		</div>
+
+		<div class="modal fade bd-example-modal-lg" data-backdrop="static" data-keyboard="false" tabindex="-1">
+		    <div class="modal-dialog modal-sm">
+		        <div class="modal-content" style="width: 48px">
+		            <div class="spinner-border text-info" style="width: 3rem; height: 3rem;" role="status">
+					<span class="sr-only">Loading...</span>
+					</div>
+		        </div>
+		    </div>
+		</div>
+
+<script>
+
+	var currentTab = 0; // Current tab is set to be the first tab (0)
+	showTab(currentTab); // Display the current tab
+
+	var nextbtn = document.getElementById("nextBtn");
+	var prevbtn = document.getElementById("prevBtn");
+
+	nextbtn.style.transition = 'opacity 1s ease-out';
+	prevbtn.style.transition = 'opacity 1s ease-out';
+
+	function changeText(sel) {
+		var e = document.getElementById("algo");
+		var chosenalgo = e.options[e.selectedIndex].value;
+		if(chosenalgo=='lr'){
+			document.getElementById("training-time").innerHTML = "Expected training time: 30 seconds";
+		} else if(chosenalgo=='lstm'){
+			document.getElementById("training-time").innerHTML = "Expected training time: 2-3 minutes";
+		} else if (chosenalgo=='hw'){
+			document.getElementById("training-time").innerHTML = "Expected training time: 10 seconds";
+		}
+	}
+
+	function showTab(n) {
+		// This function will display the specified tab of the form ...
+		var x = document.getElementsByClassName("tab");
+		x[n].style.height = 'auto';
+		x[n].style.opacity = '1';
+
+		var nextbtn = document.getElementById("nextBtn");
+		var prevbtn = document.getElementById("prevBtn");
+		nextbtn.style.opacity = '1';
+		nextbtn.style.height = 'auto';
+		prevbtn.style.opacity = '1';
+		prevbtn.style.height = 'auto';
+
+
+		// ... and fix the Previous/Next buttons:
+		if (n == 0) {
+			document.getElementById("prevBtn").style.display = "none";
+		} else {
+			document.getElementById("prevBtn").style.display = "inline";
+		}
+
+		if (n == (x.length - 1)) {
+			document.getElementById("nextBtn").className = "btn btn-md btn-warning";
+			document.getElementById("nextBtn").innerHTML = "Submit";
+		} else if (n == 0){
+			document.getElementById("nextBtn").innerHTML = "Begin";
+		} 
+		else {
+			document.getElementById("nextBtn").className = "btn btn-md btn-info";
+			document.getElementById("nextBtn").innerHTML = "Next";
+		}
+		// ... and run a function that displays the correct step indicator:
+		fixStepIndicator(n)
+	}
+
+	function nextPrev(n) {
+
+		// This function will figure out which tab to display
+		var x = document.getElementsByClassName("tab");
+
+		var nextbtn = document.getElementById("nextBtn");
+		var prevbtn = document.getElementById("prevBtn");
+
+		// Exit the function if any field in the current tab is invalid:
+		if (n == 1 && !validateForm()) return false;
+		// Hide the current tab:
+		x[currentTab].style.opacity = '0';
+		x[currentTab].style.height = '0';
+
+		nextbtn.style.opacity = '0';
+		nextbtn.style.height = '0';
+		prevbtn.style.opacity = '0';
+		prevbtn.style.height = '0';
+
+		// Increase or decrease the current tab by 1:
+		currentTab = currentTab + n;
+		// if you have reached the end of the form... :
+		if (currentTab >= x.length) {
+			//...the form gets submitted:
+			$('.modal').modal('show');
+			document.getElementById("cardbody").style.opacity = "0";
+			document.getElementById("regForm").submit();
+			return false;
+		}
+
+
+		// Otherwise, display the correct tab:
+		showTab(currentTab);
+	}
+
+	function validateForm() {
+		// This function deals with validation of the form fields
+		var x, y, i, valid = true;
+		x = document.getElementsByClassName("tab");
+		y = x[currentTab].getElementsByTagName("input");
+		// A loop that checks every input field in the current tab:
+		for (i = 0; i < y.length; i++) {
+			// If a field is empty...
+			if (y[i].value == "") {
+				// add an "invalid" class to the field:
+				y[i].className += " invalid";
+				// and set the current valid status to false:
+				valid = false;
+			}
+		}
+		// If the valid status is true, mark the step as finished and valid:
+		if (valid) {
+			document.getElementsByClassName("step")[currentTab].className += " finish";
+		}
+		return valid; // return the valid status
+	}
+
+	function fixStepIndicator(n) {
+		// This function removes the "active" class of all steps...
+		var i, x = document.getElementsByClassName("step");
+		for (i = 0; i < x.length; i++) {
+			x[i].className = x[i].className.replace(" active", "");
+		}
+		//... and adds the "active" class to the current step:
+		x[n].className += " active";
+	}
+
+
+</script>
+
+
+{% endblock %}

@@ -1,0 +1,60 @@
+{% extends "main/header.html" %}
+
+{% block content %}
+
+			<!-- Card -->
+			<div class="card" style="background-color:#1e282d;width:80%;margin:auto;">
+				<!-- Card content -->
+				<div id="cardbody" class="card-body">
+					<div class="container">
+						<div class="row">
+							<div class="col">
+								<h4>{{ algo }} Results</h4>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-9">
+								{{ div|safe }}
+								<hr>
+								<h5>Cross validation scores in Mean Absolute Error (5 Time-series splits):</h5>
+								<table style="background-color:#263238; table-layout: fixed; width:100%; border-collapse: separate; border-spacing: 10px;">
+									<tr>
+										{% for split in cv_scores.keys %}
+										<th>Split {{ split }}</th>
+										{% endfor %}
+										<th>Mean</th>
+										<th>Std</th>
+									</tr>
+									<tr>
+										{% for score in cv_scores.values %}
+										<td>{{ score|floatformat:"3" }}</td>
+										{% endfor %}
+										<td>{{ cv_mean|floatformat:"3" }}</td>
+										<td>{{ cv_std|floatformat:"3" }}</td>
+									</tr>
+								</table>
+								<hr>
+								<a href="/" class="btn btn-block waves-effect btn-info">Back to Home</a>
+							</div>
+							<div class="col-3">
+								<table class="text-center" style="background-color:#263238; table-layout: fixed; width:100%; border-collapse: separate; border-spacing: 10px;">
+								<tr>
+									<th>Date</th>
+									<th>Forecast</th>
+								</tr>
+								{% for date, forecast in predictions.items %}
+								<tr>
+									<td>{{ date|date:"Y-m-d" }}</td>
+									<td>{{ forecast|floatformat:"2" }}</td>
+								</tr>
+								{% endfor %}
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- Card -->
+
+
+{% endblock %}
