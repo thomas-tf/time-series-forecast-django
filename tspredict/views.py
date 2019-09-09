@@ -36,18 +36,21 @@ def index(request):
 						'algo':'Linear Regression'
 					})
 			elif(algo=="lstm"):
-				predictions, cv_scores, div = deeplearning.lstm(stockid)
-				str_cv_score = {}
-				for i, s in enumerate(cv_scores):
-					str_cv_score[f'{i+1}'] = s*-1
-				return render(request, 'main/results.html', {
-						'predictions':predictions,
-						'cv_scores':str_cv_score,
-						'cv_mean':cv_scores.mean()*-1,
-						'cv_std':cv_scores.std(),
-						'div':div,
-						'algo':'LSTM'
-					})
+				messages.error("Sorry, we cannot provide deep learning algorithms due to limited resources.")
+				# predictions, cv_scores, div = deeplearning.lstm(stockid)
+				# str_cv_score = {}
+				# for i, s in enumerate(cv_scores):
+				# 	str_cv_score[f'{i+1}'] = s*-1
+				# return render(request, 'main/results.html', {
+				# 		'predictions':predictions,
+				# 		'cv_scores':str_cv_score,
+				# 		'cv_mean':cv_scores.mean()*-1,
+				# 		'cv_std':cv_scores.std(),
+				# 		'div':div,
+				# 		'algo':'LSTM'
+				# 	})
+				return HttpResponseRedirect(self.request.path_info)
+
 			elif(algo=="hw"):
 				predictions, cv_scores, div = statsmodels.holtwinters(stockid)
 				str_cv_score = {}
@@ -93,5 +96,3 @@ def index(request):
 
 	return render(request, 'main/index.html')
 
-def forecast(request):
-	return HttpResponse("Hello, world. You're at the polls index.")

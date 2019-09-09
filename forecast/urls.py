@@ -16,10 +16,9 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from tspredict.views import index, forecast
+from tspredict.views import index
 
 urlpatterns = [
 	path('', index, name='homepage'),
-	path('forecast/', forecast, name='forecast'),
     path('admin/', admin.site.urls),
 ]
