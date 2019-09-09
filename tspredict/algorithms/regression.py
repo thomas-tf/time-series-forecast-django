@@ -1,13 +1,13 @@
 import quandl
 import pandas as pd
-from sklearn.linear_model import Lasso
+from sklearn.linear_model import LinearRegression
 from sklearn.svm import SVR
 from sklearn.model_selection import cross_val_score, TimeSeriesSplit
 from sklearn.preprocessing import PolynomialFeatures, StandardScaler
 from datetime import timedelta
 from .utils import plot_ohlc, feature_engineering_regression
 
-def lasso_regression(stockid):
+def linear_regression(stockid):
 	df = quandl.get(f'HKEX/{stockid}', api_key="DRXLGbo1-dWHV-R86jxH")
 
 	df = feature_engineering_regression(df)
@@ -18,7 +18,7 @@ def lasso_regression(stockid):
 	scaler = StandardScaler()
 	poly = PolynomialFeatures(degree=3)
 
-	categoricals = ['is quarter start', 'future is quarter start']
+	categoricals = ['is quarter start', 'future is quarter start', 'date']
 	numerics = list(set(data.columns.tolist()) - set(categoricals) - set(['label']))
 
 	polyed = poly.fit_transform(data[numerics])
@@ -27,9 +27,9 @@ def lasso_regression(stockid):
 
 	tscv = TimeSeriesSplit(n_splits=5)
 
-	cv_score = cross_val_score(Lasso(alpha=0.1), data.drop('label',axis=1), y=data.label, scoring='neg_mean_absolute_error', cv=tscv)
+	cv_score = cross_val_score(LinearRegression(), data.drop('label',axis=1), y=data.label, scoring='neg_mean_absolute_error', cv=tscv)
 
-	model = Lasso(alpha=0.1)
+	model = LinearRegression()
 	model.fit(data.drop('label',axis=1), y=data.label)
 
 	forecast.drop('label',axis=1, inplace=True)

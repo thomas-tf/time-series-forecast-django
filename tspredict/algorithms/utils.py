@@ -2,6 +2,7 @@ import quandl
 import plotly.offline as opy
 import plotly.graph_objs as go
 import pandas as pd
+from sklearn.preprocessing import LabelEncoder
 from datetime import timedelta
 
 def check_if_stock_exists(stockid):
@@ -79,6 +80,9 @@ def feature_engineering_regression(df):
 	df['future quarter'] = df['future date'].dt.quarter
 	df['future is quarter start'] = df['future date'].dt.is_quarter_start
 	df['future is quarter start'] = df['future is quarter start'].map({True:1, False:0})
+
+	le = LabelEncoder()
+	df['date'] = le.fit_transform(df.index)
 
 	df.drop('future date', axis=1, inplace=True)
 
