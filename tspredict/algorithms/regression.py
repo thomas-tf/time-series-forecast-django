@@ -1,6 +1,6 @@
 import quandl
 import pandas as pd
-from sklearn.linear_model import LinearRegression
+from sklearn.linear_model import Lasso
 from sklearn.svm import SVR
 from sklearn.model_selection import cross_val_score, TimeSeriesSplit
 from sklearn.preprocessing import PolynomialFeatures, StandardScaler
@@ -27,9 +27,9 @@ def linear_regression(stockid):
 
 	tscv = TimeSeriesSplit(n_splits=5)
 
-	cv_score = cross_val_score(LinearRegression(), data.drop('label',axis=1), y=data.label, scoring='neg_mean_absolute_error', cv=tscv)
+	cv_score = cross_val_score(Lasso(alpha=0.1), data.drop('label',axis=1), y=data.label, scoring='neg_mean_absolute_error', cv=tscv)
 
-	model = LinearRegression()
+	model = Lasso(alpha=0.1)
 	model.fit(data.drop('label',axis=1), y=data.label)
 
 	forecast.drop('label',axis=1, inplace=True)
