@@ -23,7 +23,7 @@ def index(request):
 
 		if(validate=="True"):
 			if(algo=="lr"):
-				predictions, cv_scores, div = regression.LinearRegression(stockid)
+				predictions, cv_scores, div = regression.linear_regression(stockid)
 				str_cv_score = {}
 				for i, s in enumerate(cv_scores):
 					str_cv_score[f'{i+1}'] = s*-1
